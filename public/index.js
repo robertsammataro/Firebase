@@ -44,7 +44,11 @@ document.querySelector("#start-button").addEventListener('click', function() {
 
   function beginGame() {
 
+    //Get important values of the game
     const playerCount = document.getElementsByClassName("queued-player").length;
+    const game = document.getElementById("game").value;
+    const bracketType = document.getElementById("tournament-type").value;
+    const tournamentName = document.getElementById("tournament-name").value;
 
     //Ensure there are enough people to actually start the tournament
     if (playerCount < 2) {
@@ -52,15 +56,18 @@ document.querySelector("#start-button").addEventListener('click', function() {
       return;
     };
 
+    if (tournamentName.length < 3) {
+      alert("You must give your tournament a name at least three characters long.");
+      return;
+    }
 
     //Move players from queue to actual tournament play
     const players = [];
-
     let playerArray = document.getElementsByClassName("queued-player");
     for(let x = 0; x < playerArray.length; x++) {
       players.push(playerArray[x].outerText.replace('\n\n', ""));
     }
 
-    console.log(players);
+    console.log(players); //Sanity Check
 
   }
