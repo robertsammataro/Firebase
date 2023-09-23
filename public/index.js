@@ -96,6 +96,8 @@ document.querySelector("#start-button").addEventListener('click', function() {
 
   function drawRow(players) {
 
+    let heatCount = 0;
+
     for(let count = 0; count < players.length; count += 2) {
       
       let player1 = players[count];
@@ -105,13 +107,15 @@ document.querySelector("#start-button").addEventListener('click', function() {
         player2 = players[count + 1]
       }
 
-      draw_matchup(player1, player2);
+      draw_matchup(player1, player2, 1, heatCount);
+
+      heatCount++;
       
     }
 
   }
 
-  function draw_matchup(player1, player2) {
+  function draw_matchup(player1, player2, heat, match) {
 
     this.player1 = player1;
     this.player2 = player2;
@@ -120,34 +124,45 @@ document.querySelector("#start-button").addEventListener('click', function() {
     element.setAttribute("class", "matchup");
 
     this.$player1button = document.createElement('div');
+    this.$player1button.setAttribute("id", `match-h${heat}-m${match}-1`)
+    this.$player1button.setAttribute("class", "matchup-not-selected");
 
-    if(player2 != null) {
-      this.$player1button.setAttribute("class", "matchup-not-selected");
-    } else {
+    if(player2 == null) {
       this.$player1button.setAttribute("class", "matchup-selected");
     }
     
     this.$player2button = document.createElement('div');
     this.$player2button.setAttribute("class", "matchup-not-selected");
+    this.$player2button.setAttribute("id", `match-h${heat}-m${match}-2`)
     
 
-    this.$player1button.innerHTML = `${player1}`
-    this.$player1button.addEventListener('click', function() {
-      this.$player1button.setAttribute("class", "matchup-selected");
-      this.$player2button.setAttribute("class", "matchup-not-selected");
-    })
+    this.$player1button.innerHTML = `${player1}`;
 
-    this.$player2button.innerHTML = `${player2}`;
-    this.$player2button.addEventListener('click', function() {
+    if(player2 == null) {
+      this.$player2button.innerHTML = `- No Contest -`;
+    } else {
+      this.$player2button.innerHTML = `${player2}`;
+    }
 
-      if(this.$player2button.innerHTML != "null") {
+    //Only add buttonListeners if there are two players in the matchup.
+    if(player2 != null) {
+
+      this.$player1button.addEventListener('click', function() {
+        console.log("Button Pressed");
+        document.getElementById(`match-h${heat}-m${match}-1`).setAttribute("class", "matchup-selected");
+        document.getElementById(`match-h${heat}-m${match}-2`).setAttribute("class", "matchup-not-selected");
+      })
+      
+      this.$player2button.addEventListener('click', function() {
+  
+        console.log("Button Pressed");
+        document.getElementById(`match-h${heat}-m${match}-1`).setAttribute("class", "matchup-not-selected");
+        document.getElementById(`match-h${heat}-m${match}-2`).setAttribute("class", "matchup-selected");
         
-        this.$player1button.setAttribute("class", "matchup-not-selected");
-        this.$player2button.setAttribute("class", "matchup-selected");
-      
-      }
-      
-    })
+      })
+
+    }
+    
 
     element.appendChild(this.$player1button);
     element.appendChild(this.$player2button);
