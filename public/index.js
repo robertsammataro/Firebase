@@ -42,6 +42,25 @@ document.querySelector("#start-button").addEventListener('click', function() {
 
   document.getElementById("confirmation-button").addEventListener('click', function() { beginGame(); })
 
+
+  //This will make it so the user cannot alter game settings after the bracket has been generated
+  function lockGameAttributes() {
+
+    let game_element = document.getElementById("game")
+    document.getElementById("game-selection").innerHTML = `${game_element.options[game_element.selectedIndex].text}`;
+
+    let type_element = document.getElementById("tournament-type")
+    document.getElementById("tournament-type-selection").innerHTML = `${type_element.options[type_element.selectedIndex].text}`;
+
+    let name_element = document.getElementById("tournament-name")
+    document.getElementById("tournament-name-container").innerHTML = `<div style="font-size: 40px;">${name_element.value}</div>`;
+
+    document.getElementById("player-addition-column").remove();
+    document.getElementById("tournament-column").setAttribute("class", "tourney-page-width-mode");
+
+  }
+
+
   function beginGame() {
 
     //Get important values of the game
@@ -68,6 +87,72 @@ document.querySelector("#start-button").addEventListener('click', function() {
       players.push(playerArray[x].outerText.replace('\n\n', ""));
     }
 
+    lockGameAttributes();
+    drawRow(players);
+
     console.log(players); //Sanity Check
 
   }
+
+  function drawRow(players) {
+
+    for(let count = 0; count < players.length; count += 2) {
+      
+      let player1 = players[count];
+      let player2 = null;
+
+      if(count + 1 < players.length) {
+        player2 = players[count + 1]
+      }
+
+      draw_matchup(player1, player2);
+      
+    }
+
+  }
+
+  function draw_matchup(player1, player2) {
+
+    this.player1 = player1;
+    this.player2 = player2;
+
+    element = document.createElement('div');
+    element.setAttribute("class", "matchup");
+
+    this.$player1button = document.createElement('div');
+
+    if(player2 != null) {
+      this.$player1button.setAttribute("class", "matchup-not-selected");
+    } else {
+      this.$player1button.setAttribute("class", "matchup-selected");
+    }
+    
+    this.$player2button = document.createElement('div');
+    this.$player2button.setAttribute("class", "matchup-not-selected");
+    
+
+    this.$player1button.innerHTML = `${player1}`
+    this.$player1button.addEventListener('click', function() {
+      this.$player1button.setAttribute("class", "matchup-selected");
+      this.$player2button.setAttribute("class", "matchup-not-selected");
+    })
+
+    this.$player2button.innerHTML = `${player2}`;
+    this.$player2button.addEventListener('click', function() {
+
+      if(this.$player2button.innerHTML != "null") {
+        
+        this.$player1button.setAttribute("class", "matchup-not-selected");
+        this.$player2button.setAttribute("class", "matchup-selected");
+      
+      }
+      
+    })
+
+    element.appendChild(this.$player1button);
+    element.appendChild(this.$player2button);
+
+    document.getElementById("bracket").appendChild(element);
+    document.getElementById("bracket").appendChild(document.createElement("hr"));
+
+  };
