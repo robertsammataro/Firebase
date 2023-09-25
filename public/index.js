@@ -88,13 +88,14 @@ document.querySelector("#start-button").addEventListener('click', function() {
     }
 
     lockGameAttributes();
-    drawRow(players);
+    drawRow(players, 1);
 
     console.log(players); //Sanity Check
 
   }
 
-  function drawRow(players) {
+  //Create one level in the tournament bracket
+  function drawRow(players, rowNo) {
 
     let heatCount = 0;
 
@@ -107,14 +108,20 @@ document.querySelector("#start-button").addEventListener('click', function() {
         player2 = players[count + 1]
       }
 
-      draw_matchup(player1, player2, 1, heatCount);
+      draw_matchup(player1, player2, rowNo, heatCount);
 
       heatCount++;
       
     }
 
+    let button = document.createElement('button');
+    button.setAttribute('class', 'advance-button');
+    button.innerHTML += "Confirm Results"
+    document.getElementById("bracket").appendChild(button);
+
   }
 
+  //Create the buttons to indicate which player won their match
   function draw_matchup(player1, player2, heat, match) {
 
     this.player1 = player1;
