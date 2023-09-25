@@ -28,13 +28,6 @@ document.querySelector("#start-button").addEventListener('click', function() {
       })
 
       document.getElementById("player-container").appendChild(newContainer);
-
-      //Click handler to assign action to the remove button next to a queued player.
-     // document.getElementById(`remove-${playername}-button`).addEventListener('click', function() {
-      //  document.getElementById("game").remove();
-      //})
-
-
       document.getElementById("name").value = "";
     }
     
@@ -97,6 +90,11 @@ document.querySelector("#start-button").addEventListener('click', function() {
   //Create one level in the tournament bracket
   function drawRow(players, rowNo) {
 
+    //Add div for each heat under the bracket object
+    element = document.createElement('div');
+    element.setAttribute('id', `heat${rowNo}`);
+    document.getElementById('bracket').appendChild(element);
+
     let heatCount = 0;
 
     for(let count = 0; count < players.length; count += 2) {
@@ -116,7 +114,13 @@ document.querySelector("#start-button").addEventListener('click', function() {
 
     let button = document.createElement('button');
     button.setAttribute('class', 'advance-button');
+    button.setAttribute('id', 'advance-button');
     button.innerHTML += "Confirm Results"
+
+    button.addEventListener('click', function() {
+      getWinners(rowNo);
+    })
+
     document.getElementById("bracket").appendChild(button);
 
   }
@@ -174,7 +178,25 @@ document.querySelector("#start-button").addEventListener('click', function() {
     element.appendChild(this.$player1button);
     element.appendChild(this.$player2button);
 
-    document.getElementById("bracket").appendChild(element);
-    document.getElementById("bracket").appendChild(document.createElement("hr"));
+    document.getElementById(`heat${heat}`).appendChild(element);
+    document.getElementById(`heat${heat}`).appendChild(document.createElement("hr"));
 
   };
+
+  function getWinners(heatNo) {
+
+    console.log(`getWinners for heat ${heatNo}`);
+    document.getElementById('advance-button').remove();
+
+    let winners = []
+
+    let collection = document.getElementById(`heat${heatNo}`).getElementsByClassName('matchup-selected');
+
+    for (let i = 0; i < collection.length; i++) {
+      console.log(collection[i].textContent);
+      winners.push(collection[i].textContent);
+    }
+
+    console.log(winners);
+
+  }
