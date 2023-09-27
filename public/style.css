@@ -106,7 +106,7 @@
 
   .matchup {
     text-align: left;
-    width: 100%;
+    min-width: 100%;
   }
 
   .matchup-selected {

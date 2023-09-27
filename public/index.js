@@ -10,7 +10,6 @@ document.querySelector("#start-button").addEventListener('click', function() {
 
   });
 
-
   document.querySelector("#add-player-button").addEventListener('click', function() {
 
     let playername = document.getElementById("name").value;
@@ -35,7 +34,6 @@ document.querySelector("#start-button").addEventListener('click', function() {
 
   document.getElementById("confirmation-button").addEventListener('click', function() { beginGame(); })
 
-
   //This will make it so the user cannot alter game settings after the bracket has been generated
   function lockGameAttributes() {
 
@@ -52,7 +50,6 @@ document.querySelector("#start-button").addEventListener('click', function() {
     document.getElementById("tournament-column").setAttribute("class", "tourney-page-width-mode");
 
   }
-
 
   function beginGame() {
 
@@ -90,10 +87,23 @@ document.querySelector("#start-button").addEventListener('click', function() {
   //Create one level in the tournament bracket
   function drawRow(players, rowNo) {
 
+    if (players.length == 1) {
+      handleWinner(players);
+      return;
+    }
+
+    players = shuffle(players);
+
     //Add div for each heat under the bracket object
     element = document.createElement('div');
     element.setAttribute('id', `heat${rowNo}`);
+    
+    let label = document.createElement('h1');
+    label.innerHTML = `Heat ${rowNo} - ${players.length} players`;
+    element.appendChild(label);
     document.getElementById('bracket').appendChild(element);
+
+
 
     let heatCount = 0;
 
@@ -111,6 +121,8 @@ document.querySelector("#start-button").addEventListener('click', function() {
       heatCount++;
       
     }
+
+    document.getElementById("bracket").appendChild(document.createElement("br"));
 
     let button = document.createElement('button');
     button.setAttribute('class', 'advance-button');
@@ -199,4 +211,26 @@ document.querySelector("#start-button").addEventListener('click', function() {
 
     console.log(winners);
 
+    drawRow(winners, heatNo + 1);
+
   }
+
+  function handleWinner(players) {
+
+    let element = document.createElement('div');
+    element.setAttribute('id', 'winner-text');
+    
+    let text_header = document.createElement('h1');
+    text_header.innerHTML = `Congratulations ${players[0]}, you've won the tournament!`;
+
+    document.getElementById("bracket").appendChild(text_header);
+
+  }
+
+  function shuffle (array) { 
+    for (let i = array.length - 1; i > 0; i--) { 
+      const j = Math.floor(Math.random() * (i + 1)); 
+      [array[i], array[j]] = [array[j], array[i]]; 
+    } 
+    return array; 
+  }; 
