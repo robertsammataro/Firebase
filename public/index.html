@@ -1,177 +1,185 @@
 <!DOCTYPE html>
 <html>
-  <head>
 
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-    <link rel="stylesheet" href="style.css">
-    
-    <title>SimpleTourney - HOME</title>
+<head>
 
-    <!-- update the version number as needed -->
-    <script defer src="/__/firebase/10.4.0/firebase-app-compat.js"></script>
-    <!-- include only the Firebase features as you need -->
-    <script defer src="/__/firebase/10.4.0/firebase-auth-compat.js"></script>
-    <script defer src="/__/firebase/10.4.0/firebase-database-compat.js"></script>
-    <script defer src="/__/firebase/10.4.0/firebase-firestore-compat.js"></script>
-    <script defer src="/__/firebase/10.4.0/firebase-functions-compat.js"></script>
-    <script defer src="/__/firebase/10.4.0/firebase-messaging-compat.js"></script>
-    <script defer src="/__/firebase/10.4.0/firebase-storage-compat.js"></script>
-    <script defer src="/__/firebase/10.4.0/firebase-analytics-compat.js"></script>
-    <script defer src="/__/firebase/10.4.0/firebase-remote-config-compat.js"></script>
-    <script defer src="/__/firebase/10.4.0/firebase-performance-compat.js"></script>
-    <!-- 
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="/style.css">
+
+  <title>SimpleTourney - HOME</title>
+
+  <!-- update the version number as needed -->
+  <script defer src="/__/firebase/10.4.0/firebase-app-compat.js"></script>
+  <!-- include only the Firebase features as you need -->
+  <script defer src="/__/firebase/10.4.0/firebase-auth-compat.js"></script>
+  <script defer src="/__/firebase/10.4.0/firebase-database-compat.js"></script>
+  <script defer src="/__/firebase/10.4.0/firebase-firestore-compat.js"></script>
+  <script defer src="/__/firebase/10.4.0/firebase-functions-compat.js"></script>
+  <script defer src="/__/firebase/10.4.0/firebase-messaging-compat.js"></script>
+  <script defer src="/__/firebase/10.4.0/firebase-storage-compat.js"></script>
+  <script defer src="/__/firebase/10.4.0/firebase-analytics-compat.js"></script>
+  <script defer src="/__/firebase/10.4.0/firebase-remote-config-compat.js"></script>
+  <script defer src="/__/firebase/10.4.0/firebase-performance-compat.js"></script>
+  <!-- 
       initialize the SDK after all desired features are loaded, set useEmulator to false
       to avoid connecting the SDK to running emulators.
     -->
-    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
-    <script defer src="/index.js"></script>
+  <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+  
+  <script defer src="/index.js"></script>
 
 
-    <body style="background-color: gray">
+</head>
 
-      <div class="banner">
+<body style="background-color: gray">
 
-        <h1 style="margin: 0px;">SimpleTourney</h1>
-        <p style="margin: 0px;">Created by Robby Sammataro</p>
+  <div class="banner">
+
+    <h1 style="margin: 0px;">SimpleTourney</h1>
+    <p style="margin: 0px;">Created by Robby Sammataro</p>
+
+  </div>
+
+  <div class="float-container">
+
+    <!-- Tournament Column -->
+    <div class="float-child-left" style="text-align: left;" id="tournament-column">
+      <div id="tournament-name-container">
+        <input type="text" id="tournament-name" name="tournament-name" required minlength="5" maxlength="50"
+          style="font-size: 40px; width: 95%; border: hidden; background: hidden;" placeholder="Tournament Name" />
+      </div>
+
+      <div>
+        <div class="quad" id="game-selection">
+          Game<br>
+          <select name="game" id="game" style="margin-top :0px;">
+            <option value="ssbu">Super Smash Bros. Ultimate™</option>
+            <option value="mk8dx">Mariokart 8 Deluxe™</option>
+            <option value="ssbm">Super Smash Bros. Melee™</option>
+            <option value="over">Overwatch™</option>
+            <option value="lol">League of Legends™</option>
+            <option value="csgo">Counter-Strike: Global Offensive™</option>
+            <option value="fort">Fortnite™</option>
+            <option value="rl">Rocket League™</option>
+            <option value="hs">Hearthstone™</option>
+            <option value="al">Apex Legends™</option>
+            <option value="wow">World of Warcraft™</option>
+          </select>
+
+        </div>
+        <div class="quad" id="tournament-type-selection">
+          Tournament Type<br>
+          <select name="tournament-type" id="tournament-type" style="margin-top :0px;">
+            <option value="se-shuffled">Single Elimination (Shuffled)</option>
+          </select>
+
+        </div>
+      </div>
+
+      <br><br>
+
+      <div id="bracket" style="text-align: center; margin-left: 20%; margin-right: 20%;">
 
       </div>
 
-      <div class="float-container">
-        
-        <!-- Tournament Column -->
-        <div class="float-child-left" style="text-align: left;" id="tournament-column">
-          <div id="tournament-name-container">
-            <input type="text" id="tournament-name" name="tournament-name" required minlength="5" maxlength="50" style="font-size: 40px; width: 95%; border: hidden; background: hidden;" placeholder="Tournament Name"/>
-          </div>
-          
-          <div>
-            <div class="quad" id="game-selection">
-              Game<br>
-              <select name="game" id="game" style="margin-top :0px;">
-                <option value="ssbu">Super Smash Bros. Ultimate™</option>
-                <option value="mk8dx">Mariokart 8 Deluxe™</option>
-                <option value="ssbm">Super Smash Bros. Melee™</option>
-                <option value="over">Overwatch™</option>
-                <option value="lol">League of Legends™</option>
-                <option value="csgo">Counter-Strike: Global Offensive™</option>
-                <option value="fort">Fortnite™</option>
-                <option value="rl">Rocket League™</option>
-                <option value="hs">Hearthstone™</option>
-                <option value="al">Apex Legends™</option>
-                <option value="wow">World of Warcraft™</option>
-              </select>
-  
-            </div>
-            <div class="quad" id="tournament-type-selection">
-              Tournament Type<br>
-              <select name="tournament-type" id="tournament-type" style="margin-top :0px;">
-                <option value="se">Single Elimination (Shuffled)</option>
-              </select>
-  
-            </div>
-          </div>
+    </div>
 
-          <br><br>
-          
-          <div id="bracket" style="text-align: center; margin-left: 20%; margin-right: 20%;">
-            
-          </div>
-          
+    <!-- Pre-Start Popup -->
+    <div class="popup" id="popup">
+      <h1>Before we start...</h1>
+      <p>Please verify the following settings are correct:</p>
+      <div id="popup-text"></div>
+      <p>Once your bracket is made you will be unable to make changes to the roster, game, and tournament type.</p>
+      <button id="confirmation-button" onclick="hide('popup')">Let's Go!</button>
+    </div>
+
+    <!-- Player Addition Column -->
+    <div class="float-child-right" style="background-color: rgb(21, 21, 56); color:white;" id="player-addition-column">
+      <div>
+
+        <h1 style="margin-bottom: 0px;">Participants</h1>
+        <p style="margin-top: 0px;">Click a name to remove</p>
+
+
+        <div>
+          <input type="text" id="name" name="name" required minlength="1" maxlength="50" size="10" style="width:60%" />
+          <button id="add-player-button">Add Player</button>
         </div>
 
-        <!-- Pre-Start Popup -->
-        <div class="popup" id="popup">
-          <h1>Before we start...</h1>
-          <p>Please verify the following settings are correct:</p>
-          <div id="popup-text"></div>
-          <p>Once your bracket is made you will be unable to make changes to the roster, game, and tournament type.</p>
-          <button id="confirmation-button" onclick="hide('popup')">Let's Go!</button>
-        </div>
-        
-        <!-- Player Addition Column -->
-        <div class="float-child-right" style="background-color: rgb(21, 21, 56); color:white;" id="player-addition-column">
-          <div>
-            
-            <h1 style="margin-bottom: 0px;">Participants</h1>
-            <p style="margin-top: 0px;">Click a name to remove</p>
-            
-            
-            <div>
-              <input type="text" id="name" name="name" required minlength="1" maxlength="50" size="10" style="width:60%"/>
-              <button id="add-player-button">Add Player</button>
-            </div>              
+        <br>
 
-            <br>
-
-            <div id="player-container">
-
-            </div>
-
-            <br>
-
-            <div style="padding-bottom: 10px;">
-              <button id="start-button" class="start-button" onclick="show('popup')">Start Tournament</button>
-            </div>
-
-          </div>
+        <div id="player-container">
 
         </div>
-      
+
+        <br>
+
+        <div style="padding-bottom: 10px;">
+          <button id="start-button" class="start-button" onclick="show('popup')">Start Tournament</button>
+        </div>
+
       </div>
 
-    </body>
+    </div>
 
-    <script>
+  </div>
 
-      $ = function(id) {
-        return document.getElementById(id);
-      }
+</body>
 
-      var show = function(id) {
-        $(id).style.display ='block';
-      }
-      var hide = function(id) {
-        $(id).style.display ='none';
-      }
+<script>
 
-      document.addEventListener('DOMContentLoaded', function() {
-        const loadEl = document.querySelector('#load');
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.firestore().doc('/foo/bar').get().then(() => { });
-        // firebase.functions().httpsCallable('yourFunction')().then(() => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        // firebase.analytics(); // call to activate
-        // firebase.analytics().logEvent('tutorial_completed');
-        // firebase.performance(); // call to activate
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+  $ = function (id) {
+    return document.getElementById(id);
+  }
 
-        try {
-          let app = firebase.app();
-          let features = [
-            'auth', 
-            'database', 
-            'firestore',
-            'functions',
-            'messaging', 
-            'storage', 
-            'analytics', 
-            'remoteConfig',
-            'performance',
-          ].filter(feature => typeof app[feature] === 'function');
-          loadEl.textContent = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          loadEl.textContent = 'Error loading the Firebase SDK, check the console.';
-        }
-      });
-    </script>
-  </body>
+  var show = function (id) {
+    $(id).style.display = 'block';
+  }
+  var hide = function (id) {
+    $(id).style.display = 'none';
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const loadEl = document.querySelector('#load');
+    // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+    // // The Firebase SDK is initialized and available here!
+    //
+    // firebase.auth().onAuthStateChanged(user => { });
+    // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
+    // firebase.firestore().doc('/foo/bar').get().then(() => { });
+    // firebase.functions().httpsCallable('yourFunction')().then(() => { });
+    // firebase.messaging().requestPermission().then(() => { });
+    // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
+    // firebase.analytics(); // call to activate
+    // firebase.analytics().logEvent('tutorial_completed');
+    // firebase.performance(); // call to activate
+    //
+    // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
+
+    try {
+      let app = firebase.app();
+      let features = [
+        'auth',
+        'database',
+        'firestore',
+        'functions',
+        'messaging',
+        'storage',
+        'analytics',
+        'remoteConfig',
+        'performance',
+      ].filter(feature => typeof app[feature] === 'function');
+      loadEl.textContent = `Firebase SDK loaded with ${features.join(', ')}`;
+    } catch (e) {
+      console.error(e);
+      loadEl.textContent = 'Error loading the Firebase SDK, check the console.';
+    }
+  });
+</script>
+</body>
+
 </html>
