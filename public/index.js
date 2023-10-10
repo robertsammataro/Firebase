@@ -43,18 +43,18 @@ function lockGameAttributes(tourneyObj) {
 
   let game_element = document.getElementById("game");
   document.getElementById("game-selection").innerHTML = `${
-    game_element.options[game_element.selectedIndex].text
+    tourneyObj.game
   }`;
 
   let type_element = document.getElementById("tournament-type");
   document.getElementById("tournament-type-selection").innerHTML = `${
-    type_element.options[type_element.selectedIndex].text
+    tourneyObj.bracketType
   }`;
 
   let name_element = document.getElementById("tournament-name");
   document.getElementById(
     "tournament-name-container"
-  ).innerHTML = `<div style="font-size: 40px;">${name_element.value}</div>`;
+  ).innerHTML = `<div style="font-size: 40px;">${tourneyObj.tournamentName}</div>`;
 
   document.getElementById("player-addition-column").remove();
   document
@@ -102,13 +102,77 @@ function beginGame() {
 }
 
 //Create one level in the tournament bracket
-function drawRow(players, rowNo) {
+function createNewHeat(players, rowNo, tourneyId, tourneyData) {
+
   if (players.length == 1) {
     handleWinner(players);
     return;
   }
 
   players = shuffle(players);
+
+  //Add div for each heat under the bracket object
+  element = document.createElement("div");
+  element.setAttribute("id", `heat${rowNo}`);
+
+  let label = document.createElement("h1");
+  label.innerHTML = `Heat ${rowNo} - ${players.length} players`;
+  element.appendChild(label);
+  document.getElementById("bracket").appendChild(element);
+
+  let heatCount = 0;
+
+  let heatJSON = {};
+
+  for (let count = 0; count < players.length; count += 2) {
+    let player1 = players[count];
+    let player2 = null;
+
+    if (count + 1 < players.length) {
+      player2 = players[count + 1];
+    }
+
+    if(player2) {
+      heatJSON[`match${heatCount}`] = {"player1": player1, "player2": player2, "winner": null}
+    } else {
+      heatJSON[`match${heatCount}`] = {"player1": player1, "player2": player2, "winner": player1}
+    }    
+
+    draw_matchup(player1, player2, rowNo, heatCount);
+
+    heatCount++;
+  }
+
+  heatJSON["meta"] = {"players": players, "player-count": players.length, "matchups": heatCount}
+
+  if(!tourneyData["heat"]) {
+    tourneyData["heat"] = {};
+  }
+
+  tourneyData["heat"][rowNo] = heatJSON;
+
+  //Add heatJSON to the database.
+  const childRef = firebase.database().ref('/tourneys').child(tourneyId);
+  childRef.update(tourneyData)
+
+  document.getElementById("bracket").appendChild(document.createElement("br"));
+
+  let button = document.createElement("button");
+  button.setAttribute("class", "advance-button");
+  button.setAttribute("id", "advance-button");
+  button.innerHTML += "Confirm Results";
+
+  button.addEventListener("click", function () {
+    getWinners(rowNo, tourneyId, tourneyData);
+  });
+
+  document.getElementById("bracket").appendChild(button);
+}
+
+function loadExistingHeat(rowNo, tourneyData, tourneyId) {
+
+  //Get Players from tourneyData object:
+  let players = tourneyData["heat"][rowNo]["meta"]["players"];
 
   //Add div for each heat under the bracket object
   element = document.createElement("div");
@@ -131,21 +195,37 @@ function drawRow(players, rowNo) {
 
     draw_matchup(player1, player2, rowNo, heatCount);
 
+    winnerId = tourneyData["heat"][rowNo][`match${heatCount}`]["winner"]
+
+    if(winnerId == 1) {
+      document.getElementById(`match-h${rowNo}-m${heatCount}-1`).setAttribute("class", "matchup-selected")
+    }
+    
+    else if(winnerId == 2) {
+      document.getElementById(`match-h${rowNo}-m${heatCount}-2`).setAttribute("class", "matchup-selected")
+
+    }
+
     heatCount++;
   }
 
   document.getElementById("bracket").appendChild(document.createElement("br"));
 
-  let button = document.createElement("button");
-  button.setAttribute("class", "advance-button");
-  button.setAttribute("id", "advance-button");
-  button.innerHTML += "Confirm Results";
+  if(!tourneyData["heat"] || rowNo == Object.keys(tourneyData["heat"]).length - 1) {
 
-  button.addEventListener("click", function () {
-    getWinners(rowNo);
-  });
+      let button = document.createElement("button");
+      button.setAttribute("class", "advance-button");
+      button.setAttribute("id", "advance-button");
+      button.innerHTML += "Confirm Results";
+    
+      button.addEventListener("click", function () {
+        getWinners(rowNo, tourneyId, tourneyData);
+      });
+    
+      document.getElementById("bracket").appendChild(button);
 
-  document.getElementById("bracket").appendChild(button);
+  }  
+
 }
 
 //Create the buttons to indicate which player won their match
@@ -179,7 +259,6 @@ function draw_matchup(player1, player2, heat, match) {
   //Only add buttonListeners if there are two players in the matchup.
   if (player2 != null) {
     this.$player1button.addEventListener("click", function () {
-      console.log("Button Pressed");
       document
         .getElementById(`match-h${heat}-m${match}-1`)
         .setAttribute("class", "matchup-selected");
@@ -189,7 +268,6 @@ function draw_matchup(player1, player2, heat, match) {
     });
 
     this.$player2button.addEventListener("click", function () {
-      console.log("Button Pressed");
       document
         .getElementById(`match-h${heat}-m${match}-1`)
         .setAttribute("class", "matchup-not-selected");
@@ -197,6 +275,7 @@ function draw_matchup(player1, player2, heat, match) {
         .getElementById(`match-h${heat}-m${match}-2`)
         .setAttribute("class", "matchup-selected");
     });
+
   }
 
   element.appendChild(this.$player1button);
@@ -208,9 +287,11 @@ function draw_matchup(player1, player2, heat, match) {
     .appendChild(document.createElement("hr"));
 }
 
-function getWinners(heatNo) {
-  console.log(`getWinners for heat ${heatNo}`);
-  document.getElementById("advance-button").remove();
+function getWinners(heatNo, tourneyId, tourneyData) {
+
+  if(document.getElementById("advance-button")) {
+    document.getElementById("advance-button").remove();
+  }
 
   let winners = [];
 
@@ -219,13 +300,20 @@ function getWinners(heatNo) {
     .getElementsByClassName("matchup-selected");
 
   for (let i = 0; i < collection.length; i++) {
-    console.log(collection[i].textContent);
     winners.push(collection[i].textContent);
+
+    if(collection[i].id.endsWith("1")){
+      tourneyData["heat"][heatNo][`match${i}`]["winner"] = 1
+    } else {
+      tourneyData["heat"][heatNo][`match${i}`]["winner"] = 2
+    }
+
+    const childRef = firebase.database().ref('/tourneys').child(tourneyId);
+    childRef.update(tourneyData)
+
   }
 
-  console.log(winners);
-
-  drawRow(winners, heatNo + 1);
+  createNewHeat(winners, heatNo + 1, tourneyId, tourneyData);
 }
 
 function handleWinner(players) {
@@ -265,7 +353,26 @@ async function renderPage(tourneyId) {
     return snapshot.val();
   })
 
-  console.log(`Rendering tournament ${tourneyId}`);
-  console.log(tourneyData);
+  lockGameAttributes(tourneyData);
+
+  let count = 1;
+
+  //Check to see how many heats have already been completed:
+  if(tourneyData["heat"]) {
+
+    for (count = 1; count <= Object.keys(tourneyData["heat"]).length; count++){
+
+      loadExistingHeat(count, tourneyData, tourneyId)
+
+    }
+
+    //Get the players that are still in the 
+    getWinners(count - 1, tourneyId, tourneyData);
+
+
+
+  } else {
+    createNewHeat(tourneyData.players, 1, tourneyId, tourneyData);
+  }
 
 }
